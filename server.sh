@@ -10,13 +10,13 @@ else
 fi
 
 # Tiempo activo de servidor
-uptime | awk -F'( |,|:)+' '{printf("%s:%s ", ($6 * 24 + $8),  $9)}' >> $FILE
+uptime | awk -F'( |,|:)+' '{printf("%s:%s,", ($6 * 24 + $8),  $9)}' >> $FILE
 
 # Uso de CPU de servidor
-top -bn1 | grep Cpu | awk '{printf("%s ", $2)}' >> $FILE
+top -bn1 | grep Cpu | awk '{printf("%s,", $2)}' >> $FILE
 
 # Uso de RAM de servidor (Usado, Disponible, Total)
-free -h | awk 'NR ==2 { printf("%s %s %s ", $3, $7, $2) }' >> $FILE
+free -h | awk 'NR == 2 { printf("%s %s %s", $3, $7, $2) }' | awk -F'(,| )' '{printf("%s.%s,%s.%s,%s.%s", $1, $2, $3, $4, $5, $6)}' >> $FILE
 
 # Numero de tareas
 top -bn1 | grep Task | awk '{ printf("%s\n", $2) }' >> $FILE
